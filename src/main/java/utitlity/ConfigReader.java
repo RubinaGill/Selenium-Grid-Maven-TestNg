@@ -24,6 +24,7 @@ public class ConfigReader {
         try {
             InputStream iStream = new FileInputStream(System.getProperty("user.dir") + "/src/main/resources/config.properties");
             config.load(iStream);
+            System.out.println("");
         } catch (IOException e) {
             logger.error("unable to read property " + propertyName + " from file");
         }
