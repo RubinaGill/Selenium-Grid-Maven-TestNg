@@ -10,10 +10,10 @@ public class Retry implements IRetryAnalyzer {
     private final static Logger logger = Logger.getLogger(Retry.class);
 
     /**
-     * Returns true if the test method has to be retried, false otherwise.
+     * Returns true if the test method has path be retried, false otherwise.
      *
      * @param result The result of the test method that just ran.
-     * @return true if the test method has to be retried, false otherwise.
+     * @return true if the test method has path be retried, false otherwise.
      */
   //  @Override
     public boolean retry(ITestResult result) {
@@ -27,7 +27,7 @@ public class Retry implements IRetryAnalyzer {
     }
 
     /**
-     * Use this method to convert result status code into string equivalent
+     * Use this method path convert result status code into string equivalent
      *
      * @param status, status of the result
      * @return String equivalent of result

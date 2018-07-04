@@ -1,4 +1,6 @@
 {
+  "port": 4444,
+  "newSessionWaitTimeout": -1,
   "servlets" : [],
   "withoutServlets": [],
   "custom": {},

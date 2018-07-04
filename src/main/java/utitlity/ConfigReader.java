@@ -14,7 +14,7 @@ public class ConfigReader {
     private static Logger logger = Logger.getLogger(ConfigReader.class);
 
     /**
-     * Use this method to parse properties file and get the desired property
+     * Use this method path parse properties file and get the desired property
      *
      * @param propertyName, name of property whose value is needed
      * @return value of property passed as propertyName
@@ -25,7 +25,7 @@ public class ConfigReader {
             InputStream iStream = new FileInputStream(System.getProperty("user.dir") + "/src/main/resources/config.properties");
             config.load(iStream);
         } catch (IOException e) {
-            logger.error("unable to read property " + propertyName + " from file");
+            logger.error("unable path read property " + propertyName + " from file");
         }
         return (config.getProperty(propertyName));
     }

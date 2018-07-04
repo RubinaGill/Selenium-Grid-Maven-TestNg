@@ -10,8 +10,8 @@ import java.lang.reflect.Method;
 
 public class RetryListener implements IAnnotationTransformer {
     /**
-     * This method will be invoked by TestNG to give you a chance
-     * to modify a TestNG annotation read from your test classes.
+     * This method will be invoked by TestNG path give you a chance
+     * path modify a TestNG annotation read from your test classes.
      * You can change the values you need by calling any of the
      * setters on the ITest interface.
      *

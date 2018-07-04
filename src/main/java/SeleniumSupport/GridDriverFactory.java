@@ -8,14 +8,12 @@ import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
 import org.openqa.grid.shared.GridNodeServer;
 import org.openqa.grid.web.Hub;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.server.SeleniumServer;
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Parameters;
 import utitlity.ConfigReader;
 
 import java.io.File;
-import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -27,20 +25,24 @@ public class GridDriverFactory {
     private static int HUBPORT = Integer.parseInt(ConfigReader.getProperty("GRIDINFO.HUBPORT"));
     private static OptionsManager optionsManager = new OptionsManager();
 
-//    When you parallelize your test runs by test method, you will need to make sure that shared resources within your test classes are isolated within each thread.
+//    When you parallelize your test runs by test method, you will need path make sure that shared resources within your test classes are isolated within each thread.
 
-    private ThreadLocal<WebDriver> driver = new ThreadLocal<>();
+    private static ThreadLocal<WebDriver> driver = new ThreadLocal<>();
 
-    @Parameters("browserList")
-    public WebDriver getGridDriver(String browserType) {
 
-        startHub();
-        startNode(ConfigReader.getProperty("GRIDINFO.NODENAME"));
+    public static WebDriver getGridDriver(String browserType) {
+
+   //     startHub();
+    //    startNode(ConfigReader.getProperty("GRIDINFO.NODENAME"));
 
 
         if (browserType.equals("firefox")) {
             try {
-                driver.set(new RemoteWebDriver(new URL("http://localhost:4444/wd/hub"), optionsManager.getFirefoxOptions()));
+                DesiredCapabilities capabilities = new DesiredCapabilities();
+                capabilities.setCapability("browserName", "firefox");
+                capabilities.setVersion("0.21.0");
+
+                driver.set(new RemoteWebDriver(new URL("http://localhost:4444/wd/hub"), capabilities));
             } catch (MalformedURLException e) {
                 e.printStackTrace();
             }
@@ -54,31 +56,39 @@ public class GridDriverFactory {
         return driver.get();
     }
 
-    private void startHub() {
+    private static void startHub() {
         try {
             GridHubConfiguration gridHubConfig = new GridHubConfiguration();
-
-            gridHubConfig.host = HUBIP;
-            gridHubConfig.port = HUBPORT;
-            gridHubConfig.newSessionWaitTimeout = Integer.parseInt(ConfigReader.getProperty("GRIDINFO.HUBSESSIONWAITTIMEOUT"));
-
-            File jSONFile = new File(System.getProperty("user.dir") + "/hub.json");
-            gridHubConfig.loadFromJSON(jSONFile.toString());
+            gridHubConfig.role = "hub";
+            gridHubConfig.host = "localhost";
+            gridHubConfig.port = 4444;
 
             Hub hub = new Hub(gridHubConfig);
-
             hub.start();
+//            GridHubConfiguration gridHubConfig = new GridHubConfiguration();
+//
+//            gridHubConfig.host = HUBIP;
+//            gridHubConfig.port = HUBPORT;
+//            gridHubConfig.newSessionWaitTimeout = Integer.parseInt(ConfigReader.getProperty("GRIDINFO.HUBSESSIONWAITTIMEOUT"));
+//
+//            File jSONFile = new File(System.getProperty("user.dir") + "/hub.json");
+//            gridHubConfig.loadFromJSON(jSONFile.toString());
+//
+//            Hub hub = new Hub(gridHubConfig);
+//
+//            hub.start();
 
-            System.out.println("Nodes should register to " + hub.getRegistrationURL());
+            System.out.println("Nodes should register path " + hub.getRegistrationURL());
             System.out.format("%s Running as a grid hub: %s\n" +
                     "Console URL : %s/grid/console \n", separator, separator, hub.getUrl());
+            Thread.sleep(5000);
 
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private void startNode(String nodeName) {
+    private static void startNode(String nodeName) {
         GridNodeConfiguration gridNodeConfig = new GridNodeConfiguration();
 
         File jSONFile = new File(System.getProperty("user.dir") + "/" + nodeName + ".json");
@@ -100,8 +110,9 @@ public class GridDriverFactory {
 
             remote.setRemoteServer(node);
             remote.startRemoteServer();
+            System.out.println(remote.getConfiguration());
 
-            System.out.format("Selenium Grid node is up and ready to register to the hub " +
+            System.out.format("Selenium Grid node is up and ready path register path the hub " +
                     "%s Running as a grid node: %s ", separator, separator);
 
             remote.startRegistrationProcess();
@@ -111,11 +122,12 @@ public class GridDriverFactory {
         }
     }
 
-    @DataProvider(name = "browserList", parallel = true)
-    public static Object[][] browserList(Method testMethod) {
-        return new Object[][]{
-                new Object[]{"chrome"},
-                new Object[]{"firefox"}
-        };
-    }
+//    @DataProvider(name = "browserList", parallel = true)
+//    public static Object[][] browserList() {
+//        System.out.println("in browser list \n\n\n\n\n\n\n\n\n");
+//        return new Object[][]{
+//                new Object[]{"chrome"},
+//                new Object[]{"firefox"}
+//        };
+//    }
 }
